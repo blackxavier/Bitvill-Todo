@@ -2,13 +2,15 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework import status, permissions
 from rest_framework.response import Response
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, UpdateAPIView
 
 from todo.models import Todo
 from todo.serializers import (
     ReadTodoSerializer,
     ReadDetailTodoSerializer,
     PostWriteTodoSerializer,
+    TodoIscompleteSerializer,
+    TodoIsarchivedSerializer,
 )
 from todo.pagination import CustomPaginator
 
@@ -89,17 +91,39 @@ class TodoDetailUpdateDestroyApiView(APIView):
 from rest_framework import filters
 
 
-class TodoCompletedView(ListAPIView):
+class AllCompletedTodoView(ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
     serializer_class = ReadTodoSerializer
-    queryset = Todo.completed.all()
+
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["item"]
     ordering_fields = ["username", "email"]
 
+    def get_queryset(self):
+        return Todo.completed.filter(user=self.request.user)
 
-class TodoArchivedView(ListAPIView):
+
+class AllArchivedTodoView(ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
     serializer_class = ReadTodoSerializer
-    queryset = Todo.archived.all()
+
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["item"]
     ordering_fields = ["username", "email"]
+
+    def get_queryset(self):
+        return Todo.archived.filter(user=self.request.user)
+
+
+class ArchiveTodoView(UpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = TodoIsarchivedSerializer
+    queryset = Todo.objects.all()
+    lookup_field = "pk"
+
+
+class CompleteTodoView(UpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = TodoIscompleteSerializer
+    queryset = Todo.objects.all()
+    lookup_field = "pk"

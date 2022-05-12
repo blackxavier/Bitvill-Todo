@@ -14,7 +14,7 @@ from accounts.serializers import (
     WriteUserProfileSerializer,
     ReadUserProfileSerializer,
     RegistrationSerializer,
-    ChangePasswordSerializer,
+    ChangePasswordSerializer,MyAuthTokenSerializer
 )
 
 User = get_user_model()
@@ -33,16 +33,12 @@ def registration_view(request):
 
             account = serializer.save()
 
-            token = Token.objects.get(user=account).key
             data = {
                 "user": {
                     "email": account.email,
                 },
                 "response": "Account was successfuly created",
                 "status": f"{status.HTTP_201_CREATED} CREATED",
-                "Key": {
-                    "token": token,
-                },
             }
             return Response(data)
         else:
@@ -52,7 +48,7 @@ def registration_view(request):
 
 class ObtainAuthTokenView(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(
+        serializer = MyAuthTokenSerializer(
             data=request.data, context={"request": request}
         )
 

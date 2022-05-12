@@ -3,8 +3,10 @@ from django.urls import path
 from todo.views import (
     ListCreateApiTodo,
     TodoDetailUpdateDestroyApiView,
-    TodoCompletedView,
-    TodoArchivedView,
+    AllCompletedTodoView,
+    AllArchivedTodoView,
+    ArchiveTodoView,
+    CompleteTodoView,
 )
 
 
@@ -20,12 +22,22 @@ urlpatterns = [
     ),
     path(
         "todos/completed/",
-        TodoCompletedView.as_view(),
+        AllCompletedTodoView.as_view(),
         name="completed",
     ),
     path(
         "todos/archived/",
-        TodoArchivedView.as_view(),
+        AllArchivedTodoView.as_view(),
+        name="archived",
+    ),
+    path(
+        "todos/<int:pk>/archived/",
+        ArchiveTodoView.as_view(),
+        name="archived",
+    ),
+    path(
+        "todos/<int:pk>/complete/",
+        CompleteTodoView.as_view(),
         name="archived",
     ),
 ]
