@@ -1,4 +1,3 @@
-import django_heroku
 from pathlib import Path
 import environ
 import os
@@ -145,5 +144,6 @@ STATICFILES_DIRS = [
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+import django_heroku
 
 django_heroku.settings(locals())
