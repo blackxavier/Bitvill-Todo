@@ -1,4 +1,4 @@
-import django_on_heroku
+import django_heroku
 from pathlib import Path
 import environ
 import os
@@ -120,7 +120,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = "static/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -135,6 +134,16 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated"),
 }
+STATIC_ROOT = Path(BASE_DIR, "staticfiles")
+STATIC_URL = "/static/"
 
+# Extra places for collectstatic to find static files.
+STATICFILES_DIRS = [
+    Path(BASE_DIR, "static"),
+]
 
-django_on_heroku.settings(locals())
+# Simplified static file serving.
+# https://warehouse.python.org/project/whitenoise/
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+django_heroku.settings(locals())
